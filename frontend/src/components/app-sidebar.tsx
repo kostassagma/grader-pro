@@ -1,8 +1,6 @@
 import * as React from "react";
 import { ChevronRight } from "lucide-react";
-
-import { SearchForm } from "@/components/search-form";
-import { VersionSwitcher } from "@/components/version-switcher";
+import { Link } from "react-router";
 import {
   Collapsible,
   CollapsibleContent,
@@ -14,7 +12,6 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -26,7 +23,7 @@ import { API } from "@/lib/constants";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { cookie } = useAuthStore();
-  const { setSeries, series } = useCompsStore();
+  const { setSeries, series, selected } = useCompsStore();
 
   console.log(series);
 
@@ -99,8 +96,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <SidebarMenu>
                     {item.comps.map((comp) => (
                       <SidebarMenuItem key={comp.label}>
-                        <SidebarMenuButton asChild isActive={false}>
-                          <a href={`/app/${comp.id}`}>{comp.label}</a>
+                        <SidebarMenuButton asChild isActive={selected==comp.id}>
+                          <Link to={`/app/${comp.id}`}>{comp.label}</Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     ))}

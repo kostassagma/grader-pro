@@ -14,6 +14,8 @@ interface SeriesType {
 
 interface SeriesStoreType {
   series: SeriesType[];
+  selected: string;
+  setSelected: (newSelected: string) => void;
   setSeries: (series: SeriesType[]) => void;
 }
 
@@ -22,6 +24,10 @@ export const useCompsStore = create<SeriesStoreType>()(
     persist(
       (set) => ({
         series: [],
+        selected: "",
+        setSelected: (selected: string) => {
+          set({ selected });
+        },
         setSeries: (series: SeriesType[]) => {
           set({ series });
         },
