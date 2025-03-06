@@ -51,9 +51,7 @@ export default function SubmitPage() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbItem>
-                    {seriesLabel}
-                  </BreadcrumbItem>
+                  <BreadcrumbItem>{seriesLabel}</BreadcrumbItem>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
@@ -61,6 +59,9 @@ export default function SubmitPage() {
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
+            <div className="ml-auto fixed top-3 right-3">
+              <button className="py-2 px-4 bg-blue-800 rounded-md">Submit</button>
+            </div>
           </div>
         </header>
         <div className="flex-1">
