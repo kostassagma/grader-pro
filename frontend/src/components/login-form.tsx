@@ -4,12 +4,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
+import { useState } from "react";
+import { API } from "@/lib/constants";
+import { useAuthStore } from "@/lib/auth-store";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const { setAutCredentials } = useAuthStore();
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -21,7 +27,35 @@ export function LoginForm({
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              navigate("/app");
+              const url = `${API}/login`;
+              const options = {
+                method: "POST",
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json;charset=UTF-8",
+                },
+                body: JSON.stringify({
+                  username,
+                  password,
+                }),
+              };
+
+              fetch(url, options)
+                .then((response) => {
+                  if (response.ok) {
+                    return response.json();
+                  } else {
+                    throw new Error("");
+                  }
+                })
+                .then((data) => {
+                  console.log(data);
+                  setAutCredentials(data.encrypted_username, data.encrypted_password, data.cookie);
+                  navigate("/app")
+                })
+                .catch((_err) => {
+                  console.log("Shit went wrong!");
+                });
             }}
           >
             <div className="grid gap-6">
@@ -37,6 +71,11 @@ export function LoginForm({
                     id="username"
                     type="username"
                     placeholder="pi..."
+                    value={username}
+                    onChange={(e) => {
+                      e.preventDefault();
+                      setUsername(e.target.value);
+                    }}
                     required
                   />
                 </div>
@@ -50,7 +89,16 @@ export function LoginForm({
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => {
+                      e.preventDefault();
+                      setPassword(e.target.value);
+                    }}
+                  />
                 </div>
                 <Button type="submit" className="w-full">
                   Login
@@ -61,8 +109,7 @@ export function LoginForm({
         </CardContent>
       </Card>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <a href="#">Terms of Service</a>
       </div>
     </div>
   );

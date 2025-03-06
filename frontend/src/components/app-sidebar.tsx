@@ -1,6 +1,8 @@
 import * as React from "react"
-import { ChevronRight, File, Folder } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 
+import { SearchForm } from "@/components/search-form"
+import { VersionSwitcher } from "@/components/version-switcher"
 import {
   Collapsible,
   CollapsibleContent,
@@ -12,130 +14,202 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
   SidebarRail,
 } from "@/components/ui/sidebar"
 
 // This is sample data.
 const data = {
-  changes: [
+  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
+  navMain: [
     {
-      file: "README.md",
-      state: "M",
-    },
-    {
-      file: "api/hello/route.ts",
-      state: "U",
-    },
-    {
-      file: "app/layout.tsx",
-      state: "M",
-    },
-  ],
-  tree: [
-    [
-      "app",
-      [
-        "api",
-        ["hello", ["route.ts"]],
-        "page.tsx",
-        "layout.tsx",
-        ["blog", ["page.tsx"]],
+      title: "Getting Started",
+      url: "#",
+      items: [
+        {
+          title: "Installation",
+          url: "#",
+        },
+        {
+          title: "Project Structure",
+          url: "#",
+        },
       ],
-    ],
-    [
-      "components",
-      ["ui", "button.tsx", "card.tsx"],
-      "header.tsx",
-      "footer.tsx",
-    ],
-    ["lib", ["util.ts"]],
-    ["public", "favicon.ico", "vercel.svg"],
-    ".eslintrc.json",
-    ".gitignore",
-    "next.config.js",
-    "tailwind.config.js",
-    "package.json",
-    "README.md",
+    },
+    {
+      title: "Building Your Application",
+      url: "#",
+      items: [
+        {
+          title: "Routing",
+          url: "#",
+        },
+        {
+          title: "Data Fetching",
+          url: "#",
+          isActive: true,
+        },
+        {
+          title: "Rendering",
+          url: "#",
+        },
+        {
+          title: "Caching",
+          url: "#",
+        },
+        {
+          title: "Styling",
+          url: "#",
+        },
+        {
+          title: "Optimizing",
+          url: "#",
+        },
+        {
+          title: "Configuring",
+          url: "#",
+        },
+        {
+          title: "Testing",
+          url: "#",
+        },
+        {
+          title: "Authentication",
+          url: "#",
+        },
+        {
+          title: "Deploying",
+          url: "#",
+        },
+        {
+          title: "Upgrading",
+          url: "#",
+        },
+        {
+          title: "Examples",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "API Reference",
+      url: "#",
+      items: [
+        {
+          title: "Components",
+          url: "#",
+        },
+        {
+          title: "File Conventions",
+          url: "#",
+        },
+        {
+          title: "Functions",
+          url: "#",
+        },
+        {
+          title: "next.config.js Options",
+          url: "#",
+        },
+        {
+          title: "CLI",
+          url: "#",
+        },
+        {
+          title: "Edge Runtime",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Architecture",
+      url: "#",
+      items: [
+        {
+          title: "Accessibility",
+          url: "#",
+        },
+        {
+          title: "Fast Refresh",
+          url: "#",
+        },
+        {
+          title: "Next.js Compiler",
+          url: "#",
+        },
+        {
+          title: "Supported Browsers",
+          url: "#",
+        },
+        {
+          title: "Turbopack",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Community",
+      url: "#",
+      items: [
+        {
+          title: "Contribution Guide",
+          url: "#",
+        },
+      ],
+    },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Changes</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {data.changes.map((item, index) => (
-                <SidebarMenuItem key={index}>
-                  <SidebarMenuButton>
-                    <File />
-                    {item.file}
-                  </SidebarMenuButton>
-                  <SidebarMenuBadge>{item.state}</SidebarMenuBadge>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Files</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {data.tree.map((item, index) => (
-                <Tree key={index} item={item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+      <SidebarHeader>
+        <VersionSwitcher
+          versions={data.versions}
+          defaultVersion={data.versions[0]}
+        />
+        <SearchForm />
+      </SidebarHeader>
+      <SidebarContent className="gap-0">
+        {/* We create a collapsible SidebarGroup for each parent. */}
+        {data.navMain.map((item) => (
+          <Collapsible
+            key={item.title}
+            title={item.title}
+            defaultOpen
+            className="group/collapsible"
+          >
+            <SidebarGroup>
+              <SidebarGroupLabel
+                asChild
+                className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sm"
+              >
+                <CollapsibleTrigger>
+                  {item.title}{" "}
+                  <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                </CollapsibleTrigger>
+              </SidebarGroupLabel>
+              <CollapsibleContent>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {item.items.map((item) => (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild isActive={item.isActive}>
+                          <a href={item.url}>{item.title}</a>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </CollapsibleContent>
+            </SidebarGroup>
+          </Collapsible>
+        ))}
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
-}
-
-function Tree({ item }: { item: string | any[] }) {
-  const [name, ...items] = Array.isArray(item) ? item : [item]
-
-  if (!items.length) {
-    return (
-      <SidebarMenuButton
-        isActive={name === "button.tsx"}
-        className="data-[active=true]:bg-transparent"
-      >
-        <File />
-        {name}
-      </SidebarMenuButton>
-    )
-  }
-
-  return (
-    <SidebarMenuItem>
-      <Collapsible
-        className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
-        defaultOpen={name === "components" || name === "ui"}
-      >
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton>
-            <ChevronRight className="transition-transform" />
-            <Folder />
-            {name}
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <SidebarMenuSub>
-            {items.map((subItem, index) => (
-              <Tree key={index} item={subItem} />
-            ))}
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </Collapsible>
-    </SidebarMenuItem>
   )
 }
