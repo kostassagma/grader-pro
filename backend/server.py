@@ -8,6 +8,7 @@ import base64
 import os
 from bs4 import BeautifulSoup
 load_dotenv()
+from ssh import submit_file
 
 SECRET_KEY = os.getenv("SECRET_KEY").encode("utf-8").ljust(32, b'\0')[:32]
 
@@ -42,7 +43,26 @@ def comps_route():
     
     comps = get_competitions(cookie)
     return jsonify({"series": comps}), 200
+
+
+@app.route("/submit", methods=['POST'])
+def submit_route():
+    request_data = request.get_json()
     
+    cookie = request_data['cookie']
+    encrypted_password = request_data['encryptedPassword']
+    encrypted_username = request_data['encryptedUsername']
+    task_id = request_data['taskId']
+    file = request_data['file']
+    
+    f = Fernet(base64.urlsafe_b64encode(SECRET_KEY))
+
+    username = f.decrypt(encrypted_username).decode('utf-8')
+    password = f.decrypt(encrypted_password).decode('utf-8')
+    
+    submit_file(cookie, task_id, username, password, file)
+
+    return jsonify({"success": "ok"}), 200
     
     
 def get_competitions(cookie:str):

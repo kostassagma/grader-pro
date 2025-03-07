@@ -29,7 +29,7 @@ export const useAuthStore = create<AuthStoreType>()(
         },
       }),
       {
-        name: "chat-store",
+        name: "auth-store",
       }
     )
   )
